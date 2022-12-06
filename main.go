@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "go-sessions-authentication/database"
 
+func main() {
+	database.Connect()
 }
