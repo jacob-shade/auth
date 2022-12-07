@@ -1,0 +1,1 @@
+This is a basic template that configures a Golang Webserver restAPI authentication using sessions. It uses GORM to connect the Go code to mySQL.
