@@ -26,6 +26,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	}
 
 	if err != nil || sess.Get(AUTH_KEY) == nil {
+		fmt.Println("middleware stopping exe")
 		return util.NotAuthorized(c)
 	}
 
@@ -41,7 +42,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user model.User
-	err = database.UserByEmail(data["email"], &user)
+	err = database.UserByEmail(data["email"], &user) //make sure email in db
 	if user.Id == 0 {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
@@ -59,7 +60,7 @@ func Login(c *fiber.Ctx) error {
 		return status
 	}
 
-	sess.Get(AUTH_KEY)
+	sess.Set(AUTH_KEY, true)
 	sess.Set(USER_ID, user.Id)
 
 	err = sess.Save()
@@ -98,26 +99,31 @@ func HealthCheck(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
+	fmt.Println("in getuser")
 	sess, err := store.Get(c)
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
+	fmt.Println("got session")
 
 	auth := sess.Get(AUTH_KEY)
-	if auth != nil {
+	if auth == nil {
 		return util.NotAuthorized(c)
 	}
+	fmt.Println("got auth key")
 
 	userId := sess.Get(USER_ID)
-	if userId != nil { // not authorized
+	if userId == nil { // not authorized
 		return util.NotAuthorized(c)
 	}
+	fmt.Println("got userid")
 
 	var user model.User
 	user, err = handler.GetUser(fmt.Sprint(userId))
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
+	fmt.Println("got user")
 
 	return c.Status(fiber.StatusOK).JSON(user)
 }

@@ -7,8 +7,10 @@ notes for prod https:
 backlog:
 
 primary todo:
-1. fix /user
+1. refactor file structure
+2. documentation
 
 secondary todo:
 1. change AllowOrigins: "*", to localhost or client server
 2. make sure middleware allows access of certain routes without a session
+3. encrypt .env
