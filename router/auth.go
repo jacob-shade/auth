@@ -21,7 +21,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	// can modify later to only check for authorization
 	// for pages necessary to be signed in
-	if strings.Split(c.Path(), "/")[0] == "auth" {
+	if strings.Split(c.Path(), "/")[1] == "auth" {
 		return c.Next()
 	}
 
