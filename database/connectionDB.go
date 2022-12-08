@@ -21,7 +21,8 @@ func Connect() {
 	dbName := config.Config("DB_NAME")
 	dsn := fmt.Sprintf("%v:%v@%v/%v", username, password, serverIP, dbName)
 
-	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
