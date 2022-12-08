@@ -61,6 +61,7 @@ func Login(c *fiber.Ctx) error {
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
+	fmt.Printf("user id: %v, name: %v, email: %v, password: %v", user.Id, user.Name, user.Email, user.Password)
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
 	if err != nil { // not authorized
