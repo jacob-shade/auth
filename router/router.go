@@ -1,17 +1,12 @@
 package router
 
 import (
-	"fmt"
-	"go-sessions-authentication/database"
 	"go-sessions-authentication/handler"
-	"go-sessions-authentication/model"
-	"go-sessions-authentication/util"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/session"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -46,92 +41,4 @@ func Setup() {
 	router.Get("/user", GetUser)
 
 	router.Listen(":5000")
-}
-
-func Login(c *fiber.Ctx) error {
-	var data map[string]string
-
-	err := c.BodyParser(&data)
-	if status := util.ErrorCheck(c, err); status != nil { // error occurred
-		return status
-	}
-
-	var user model.User
-	err = database.UserByEmail(data["email"], &user)
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"]))
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	sess, err := store.Get(c)
-	if status := util.ErrorCheck(c, err); status != nil { // error occurred
-		return status
-	}
-
-	sess.Get(AUTH_KEY)
-	sess.Set(USER_ID, user.Id)
-
-	err = sess.Save()
-	if status := util.ErrorCheck(c, err); status != nil { // error occurred
-		return status
-	}
-
-	return util.StatusOK(c, "logged in")
-}
-
-func Logout(c *fiber.Ctx) error {
-	sess, err := store.Get(c)
-	if err != nil { // error occurred
-		return util.StatusOK(c, "logged out (no session)")
-	}
-
-	err = sess.Destroy()
-	if status := util.ErrorCheck(c, err); status != nil { // error occurred
-		return status
-	}
-
-	return util.StatusOK(c, "logged out")
-}
-
-func HealthCheck(c *fiber.Ctx) error {
-	sess, err := store.Get(c)
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	auth := sess.Get(AUTH_KEY)
-	if auth != nil {
-		return util.StatusOK(c, "authenticated")
-	}
-	return util.NotAuthorized(c)
-}
-
-func GetUser(c *fiber.Ctx) error {
-	sess, err := store.Get(c)
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	auth := sess.Get(AUTH_KEY)
-	if auth != nil {
-		return util.StatusOK(c, "authenticated")
-	}
-	return util.NotAuthorized(c)
-
-	userId := sess.Get(USER_ID)
-	if userId != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	var user model.User
-	user, err = handler.GetUser(fmt.Sprint(userId))
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(user)
 }
