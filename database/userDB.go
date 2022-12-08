@@ -32,6 +32,16 @@ func UserByEmail(email string) (model.User, error) {
 	return user, gorm.Error
 }
 
+// Checks to see if the given email is in the user database.
+// Params: email string of the user
+// user *models.User to be updated with found user, if any
+// Returns: true if email found, false otherwise
+func IsEmailInUserDB(email string, user *model.User) bool {
+	user, err := database.UserByEmail(email)
+
+	return user.Id != 0 && err == nil
+}
+
 //***********************************UPDATE***********************************//
 
 //***********************************DELETE***********************************//
