@@ -4,5 +4,11 @@ notes for prod https:
 1. change routes.Setup() to include extra session Config.
 2. Change CORS AllowOrigins to only client ip
 
-todo:
+backlog:
+
+primary todo:
+1. fix /user
+
+secondary todo:
 1. change AllowOrigins: "*", to localhost or client server
+2. make sure middleware allows access of certain routes without a session

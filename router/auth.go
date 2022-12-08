@@ -26,9 +26,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	}
 
 	if err != nil || sess.Get(AUTH_KEY) == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "not authorized",
-		})
+		return util.NotAuthorized(c)
 	}
 
 	return c.Next()
@@ -44,8 +42,11 @@ func Login(c *fiber.Ctx) error {
 
 	var user model.User
 	err = database.UserByEmail(data["email"], &user)
-	if err != nil { // not authorized
-		return util.NotAuthorized(c)
+	if user.Id == 0 {
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{
+			"message": "user not found: " + fmt.Sprint(err),
+		})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"]))
