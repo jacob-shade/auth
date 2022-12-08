@@ -1,9 +1,10 @@
 package router
 
 import (
+	"fmt"
+	"go-sessions-authentication/database"
 	"go-sessions-authentication/handler"
 	"go-sessions-authentication/model"
-	"go-sessions-authentication/services"
 	"go-sessions-authentication/util"
 	"time"
 
@@ -39,10 +40,12 @@ func Setup() {
 
 	router.Post("/auth/register", handler.Register)
 	router.Post("/auth/login", Login)
-	//router.Post("/auth/logout", handler.Logout)
-	//router.Get("/auth/healthcheck", handler.HealthCheck)
+	router.Post("/auth/logout", Logout)
+	router.Get("/auth/healthcheck", HealthCheck)
 
-	//router.Get("/user", handler.GetUser)
+	router.Get("/user", GetUser)
+
+	router.Listen(":5000")
 }
 
 func Login(c *fiber.Ctx) error {
@@ -54,12 +57,13 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user model.User
-	if !services.IsEmailInUserDB(data["email"], &user) {
+	user, err = database.UserByEmail(data["email"])
+	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
-	if err != nil {
+	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
 
@@ -91,4 +95,43 @@ func Logout(c *fiber.Ctx) error {
 	}
 
 	return util.StatusOK(c, "logged out")
+}
+
+func HealthCheck(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil { // not authorized
+		return util.NotAuthorized(c)
+	}
+
+	auth := sess.Get(AUTH_KEY)
+	if auth != nil {
+		return util.StatusOK(c, "authenticated")
+	}
+	return util.NotAuthorized(c)
+}
+
+func GetUser(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil { // not authorized
+		return util.NotAuthorized(c)
+	}
+
+	auth := sess.Get(AUTH_KEY)
+	if auth != nil {
+		return util.StatusOK(c, "authenticated")
+	}
+	return util.NotAuthorized(c)
+
+	userId := sess.Get(USER_ID)
+	if userId != nil { // not authorized
+		return util.NotAuthorized(c)
+	}
+
+	var user model.User
+	user, err = handler.GetUser(fmt.Sprint(userId))
+	if err != nil { // not authorized
+		return util.NotAuthorized(c)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(user)
 }
