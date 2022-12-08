@@ -57,13 +57,12 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user model.User
-	user, err = database.UserByEmail(data["email"])
+	err = database.UserByEmail(data["email"], &user)
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
-	fmt.Printf("user id: %v, name: %v, email: %v, password: %v", user.Id, user.Name, user.Email, user.Password)
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"]))
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}

@@ -24,12 +24,8 @@ func UserById(id string) (model.User, error) {
 // Gets the user with the given email.
 // Params: email string of the user
 // Returns: user with the given email, if any, otherwise empty user
-func UserByEmail(email string) (model.User, error) {
-	var user model.User
-
-	gorm := DB.First(&user, "email = ?", email)
-
-	return user, gorm.Error
+func UserByEmail(email string, user *model.User) error {
+	return DB.First(&user, "email = ?", email).Error
 }
 
 //***********************************UPDATE***********************************//

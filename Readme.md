@@ -5,8 +5,4 @@ notes for prod https:
 2. Change CORS AllowOrigins to only client ip
 
 todo:
--routes
-1. login
-2. logout
-3. healthcheck
-4. user
+1. change AllowOrigins: "*", to localhost or client server
