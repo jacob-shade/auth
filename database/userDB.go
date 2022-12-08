@@ -37,7 +37,7 @@ func UserByEmail(email string) (model.User, error) {
 // user *models.User to be updated with found user, if any
 // Returns: true if email found, false otherwise
 func IsEmailInUserDB(email string, user *model.User) bool {
-	user, err := database.UserByEmail(email)
+	user, err := UserByEmail(email)
 
 	return user.Id != 0 && err == nil
 }
