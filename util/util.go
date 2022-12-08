@@ -1,8 +1,8 @@
-package controllers
+package util
 
 import "github.com/gofiber/fiber/v2"
 
-func errorCheck(c *fiber.Ctx, err error) error {
+func ErrorCheck(c *fiber.Ctx, err error) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "something went wrong: " + err.Error(),
@@ -11,8 +11,14 @@ func errorCheck(c *fiber.Ctx, err error) error {
 	return nil
 }
 
-func statusOK(c *fiber.Ctx, message string) error {
+func StatusOK(c *fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": message,
+	})
+}
+
+func NotAuthorized(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"message": "not authorized",
 	})
 }

@@ -1,11 +1,14 @@
 package database
 
-import "go-sessions-authentication/models"
+import "go-sessions-authentication/model"
 
-func GetUser(id string) models.User {
-	var user models.User
+// Gets the user with the given email.
+// Params: email string of the user
+// Returns: user with the given email, if any, otherwise empty user
+func User(email string) model.User {
+	var user model.User
 
-	DB.First(&user, "id = ?", id) // find user with id
+	DB.First(&user, "email = ?", email)
 
 	return user
 }

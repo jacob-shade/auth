@@ -1,9 +1,7 @@
 package database
 
-import (
-	"go-sessions-authentication/models"
-)
+import "go-sessions-authentication/model"
 
-func CreateUser(user *models.User) error {
+func UserCreate(user *model.User) error {
 	return DB.Create(&user).Error
 }
