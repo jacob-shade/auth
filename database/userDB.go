@@ -7,7 +7,6 @@ import (
 //***********************************CREATE***********************************//
 
 func UserCreate(user *model.User) error {
-	//fmt.Printf("user id: %v, ", &user.Id)
 	return DB.Create(&user).Error
 }
 
