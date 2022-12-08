@@ -79,7 +79,16 @@ func Login(c *fiber.Ctx) error {
 	return util.StatusOK(c, "logged in")
 }
 
-// func Logout(c *fiber.Ctx) error {
-// 	sess, err := store.Get(c)
+func Logout(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil { // error occurred
+		return util.StatusOK(c, "logged out (no session)")
+	}
 
-// }
+	err = sess.Destroy()
+	if status := util.ErrorCheck(c, err); status != nil { // error occurred
+		return status
+	}
+
+	return util.StatusOK(c, "logged out")
+}
