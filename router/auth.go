@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"go-sessions-authentication/config"
 	"go-sessions-authentication/database"
 	"go-sessions-authentication/handler"
 	"go-sessions-authentication/model"
@@ -25,7 +26,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Next()
 	}
 
-	if err != nil || sess.Get(AUTH_KEY) == nil {
+	if err != nil || sess.Get(config.Config("AUTH_KEY")) == nil {
 		fmt.Println("middleware stopping exe")
 		return util.NotAuthorized(c)
 	}
@@ -60,8 +61,8 @@ func Login(c *fiber.Ctx) error {
 		return status
 	}
 
-	sess.Set(AUTH_KEY, true)
-	sess.Set(USER_ID, user.Id)
+	sess.Set(config.Config("AUTH_KEY"), true)
+	sess.Set(config.Config("USER_ID"), user.Id)
 
 	err = sess.Save()
 	if status := util.ErrorCheck(c, err); status != nil { // error occurred
@@ -91,7 +92,7 @@ func HealthCheck(c *fiber.Ctx) error {
 		return util.NotAuthorized(c)
 	}
 
-	auth := sess.Get(AUTH_KEY)
+	auth := sess.Get(config.Config("AUTH_KEY"))
 	if auth != nil {
 		return util.StatusOK(c, "authenticated")
 	}
@@ -106,13 +107,13 @@ func GetUser(c *fiber.Ctx) error {
 	}
 	fmt.Println("got session")
 
-	auth := sess.Get(AUTH_KEY)
+	auth := sess.Get(config.Config("AUTH_KEY"))
 	if auth == nil {
 		return util.NotAuthorized(c)
 	}
 	fmt.Println("got auth key")
 
-	userId := sess.Get(USER_ID)
+	userId := sess.Get(config.Config("USER_ID"))
 	if userId == nil { // not authorized
 		return util.NotAuthorized(c)
 	}
