@@ -7,7 +7,7 @@ import (
 //***********************************CREATE***********************************//
 
 func UserCreate(user *model.User) error {
-	return DB.Create(&user).Error
+	return db.Create(&user).Error
 }
 
 //************************************READ************************************//
@@ -18,7 +18,7 @@ func UserCreate(user *model.User) error {
 func UserById(id string) (model.User, error) {
 	var user model.User
 
-	gorm := DB.First(&user, "id = ?", id)
+	gorm := db.First(&user, "id = ?", id)
 
 	return user, gorm.Error
 }
@@ -27,7 +27,7 @@ func UserById(id string) (model.User, error) {
 // Params: email string of the user
 // Returns: user with the given email, if any, otherwise empty user
 func UserByEmail(email string, user *model.User) error {
-	return DB.First(&user, "email = ?", email).Error
+	return db.First(&user, "email = ?", email).Error
 }
 
 //***********************************UPDATE***********************************//

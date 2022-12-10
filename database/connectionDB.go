@@ -9,12 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
 func Connect() {
-	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-	// dsn := "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
-
 	username := config.Config("DB_USERNAME")
 	password := config.Config("DB_PASSWORD")
 	serverIP := config.Config("SERVER_IP")
@@ -22,11 +19,11 @@ func Connect() {
 	dsn := fmt.Sprintf("%v:%v@%v/%v", username, password, serverIP, dbName)
 
 	var err error
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
 
-	DB.AutoMigrate(&model.User{}) //migrates schema to server
+	db.AutoMigrate(&model.User{}) //migrates schema to server
 	fmt.Printf("Connected to %v database\n", dbName)
 }
