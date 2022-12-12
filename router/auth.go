@@ -42,8 +42,7 @@ func Login(c *fiber.Ctx) error {
 		return status
 	}
 
-	var user model.User
-	err = database.UserByEmail(data["email"], &user) //make sure email in db
+	user, err := database.UserByEmail(data["email"]) //make sure email in db
 	if user.Id == 0 {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{

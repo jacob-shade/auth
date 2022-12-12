@@ -11,6 +11,12 @@ func ErrorCheck(c *fiber.Ctx, err error) error {
 	return nil
 }
 
+func PanicCheck(err error, msg string) {
+	if err != nil {
+		panic(msg)
+	}
+}
+
 func StatusOK(c *fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": message,
