@@ -1,3 +1,4 @@
+// Package model holds all types linked to the database schema.
 package model
 
 type User struct {
