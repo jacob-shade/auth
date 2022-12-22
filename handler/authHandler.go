@@ -1,3 +1,8 @@
+// Package handler provides functionality for routes.
+//
+// This package is implemented by manipulating the recieved "[Fiber]" Contexts.
+//
+// [Fiber]: https://pkg.go.dev/github.com/gofiber/fiber/v2@v2.40.1
 package handler
 
 import (
@@ -9,7 +14,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Allows a user to
+// Register allows a user to register with the service.
+//
+// Uses "[bcrypt]" to hash the password before storing in the database.
+//
+// [bcrypt]: https://pkg.go.dev/golang.org/x/crypto@v0.4.0/bcrypt
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 
