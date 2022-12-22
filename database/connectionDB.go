@@ -1,3 +1,13 @@
+// Package database allows services or handlers to connect and manipulate
+// mySQL databases.
+//
+// Allows for:
+//  1. Database connection
+//  2. User CRUD
+//
+// This package is implemented using the "[GORM]" ORM.
+//
+// [GORM]: https://gorm.io/docs/
 package database
 
 import (
@@ -19,6 +29,11 @@ var (
 
 // Connect connects to the database with the config given in the .env file and
 // the models given in the database package.
+//
+// For details on dsn(data source name) formating, refer to [go-sql-driver]
+// docs.
+//
+// [go-sql-driver]: https://github.com/go-sql-driver/mysql#dsn-data-source-name
 func Connect() {
 	// Loading in database enviornment variables.
 	username := config.Config("DB_USERNAME")
