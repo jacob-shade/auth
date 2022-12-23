@@ -51,7 +51,7 @@ func Connect() {
 	fmt.Printf("Connected to %v database\n", dbName)
 
 	// Auto migrating schema to keep up to date.
-	for model := range models {
+	for _, model := range models {
 		db.AutoMigrate(model)
 	}
 	fmt.Println("Automigrating database schema")
