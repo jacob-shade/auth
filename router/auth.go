@@ -13,27 +13,28 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func NewMiddleware() fiber.Handler {
-	return AuthMiddleware
-}
+// AuthMiddleware checks that the user's session is logged in.
+func AuthMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := store.Get(c)
 
-func AuthMiddleware(c *fiber.Ctx) error {
-	sess, err := store.Get(c)
+		// omits the use of the middleware for authentication routes
+		if strings.Split(c.Path(), "/")[1] == "auth" {
+			return c.Next()
+		}
 
-	// can modify later to only check for authorization
-	// for pages necessary to be signed in
-	if strings.Split(c.Path(), "/")[1] == "auth" {
+		if err != nil || sess.Get(config.Config("AUTH_KEY")) == nil {
+			fmt.Println("middleware stopping exe")
+			return util.NotAuthorized(c)
+		}
+
 		return c.Next()
 	}
-
-	if err != nil || sess.Get(config.Config("AUTH_KEY")) == nil {
-		fmt.Println("middleware stopping exe")
-		return util.NotAuthorized(c)
-	}
-
-	return c.Next()
 }
 
+// Login attempts to login the user with the email and password given.
+//
+// Updates the session storage and client cookie.
 func Login(c *fiber.Ctx) error {
 	var data map[string]string
 
@@ -71,6 +72,7 @@ func Login(c *fiber.Ctx) error {
 	return util.StatusOK(c, "logged in")
 }
 
+// Logout logs out user, deletes session from storage, expires session cookie.
 func Logout(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil { // error occurred
@@ -85,6 +87,7 @@ func Logout(c *fiber.Ctx) error {
 	return util.StatusOK(c, "logged out")
 }
 
+// HealthCheck verifies that the user is authorized.
 func HealthCheck(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil { // not authorized
@@ -98,6 +101,7 @@ func HealthCheck(c *fiber.Ctx) error {
 	return util.NotAuthorized(c)
 }
 
+// GetUser returns the JSON of the user.
 func GetUser(c *fiber.Ctx) error {
 	fmt.Println("in getuser")
 	sess, err := store.Get(c)

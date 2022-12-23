@@ -1,3 +1,6 @@
+// Package router implements a request router using the "[Fiber]" app.
+//
+// [Fiber]: https://pkg.go.dev/github.com/gofiber/fiber/v2@v2.40.1
 package router
 
 import (
@@ -11,6 +14,8 @@ import (
 
 var store *session.Store
 
+// Setup sets up routes to use HTTP methods and calls the appropriate function
+// to handle each route.
 func Setup() {
 	router := fiber.New()
 
@@ -23,7 +28,7 @@ func Setup() {
 		Expiration: time.Hour * 5,
 	})
 
-	router.Use(NewMiddleware(), cors.New(cors.Config{
+	router.Use(AuthMiddleware(), cors.New(cors.Config{
 		AllowCredentials: true,
 		AllowOrigins:     "*", //so we can access from local host
 		AllowHeaders:     "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
