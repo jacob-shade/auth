@@ -15,22 +15,18 @@ func UserCreate(user *model.User) error {
 
 // UserById returns the user with the given id from the database.
 // If no user is found, an empty user will be returned.
-func UserById(id string) (model.User, error) {
-	var user model.User
+func UserById(id string) (user model.User, err error) {
+	err = db.First(&user, "id = ?", id).Error
 
-	err := db.First(&user, "id = ?", id).Error
-
-	return user, err
+	return
 }
 
 // UserByEmail returns the user with the given email from the database.
 // If no user is found, an empty user will be returned.
-func UserByEmail(email string) (model.User, error) {
-	var user model.User
+func UserByEmail(email string) (user model.User, err error) {
+	err = db.First(&user, "email = ?", email).Error
 
-	err := db.First(&user, "email = ?", email).Error
-
-	return user, err
+	return
 }
 
 //***********************************UPDATE***********************************//
