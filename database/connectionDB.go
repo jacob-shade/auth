@@ -40,9 +40,10 @@ func Connect() {
 	password := config.Config("DB_PASSWORD")
 	protocol := config.Config("PROTOCOL")
 	address := config.Config("ADDRESS")
+	port := config.Config("PORT")
 	dbName := config.Config("DB_NAME")
-	dsn := fmt.Sprintf("%v:%v@%v(%v)/%v", username, password, protocol, address,
-		dbName)
+	dsn := fmt.Sprintf("%v:%v@%v(%v:%v)/%v", username, password, protocol,
+		address, port, dbName)
 
 	// Connecting to database.
 	var err error
