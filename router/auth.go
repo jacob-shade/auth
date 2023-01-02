@@ -36,14 +36,15 @@ func AuthMiddleware() fiber.Handler {
 //
 // Updates the session storage and client cookie.
 func Login(c *fiber.Ctx) error {
+	// parsing json from client
 	var data map[string]string
-
 	err := c.BodyParser(&data)
-	if status := util.ErrorCheck(c, err); status != nil { // error occurred
+	if status := util.ErrorCheck(c, err); status != nil {
 		return status
 	}
 
-	user, err := database.UserByUsername(data["username"]) //username in db
+	// checking if username is in db
+	user, err := database.UserByUsername(data["username"])
 	if user.Id == 0 {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
@@ -51,19 +52,21 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	// checking that password matches
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"]))
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}
 
+	// creating a session
 	sess, err := store.Get(c)
 	if status := util.ErrorCheck(c, err); status != nil { // error occurred
 		return status
 	}
-
 	sess.Set(config.Config("AUTH_KEY"), true)
 	sess.Set(config.Config("USER_ID"), user.Id)
 
+	// updating storage and client cookie with new session
 	err = sess.Save()
 	if status := util.ErrorCheck(c, err); status != nil { // error occurred
 		return status
