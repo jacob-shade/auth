@@ -29,6 +29,14 @@ func UserByEmail(email string) (user model.User, err error) {
 	return
 }
 
+// UserByUsername returns the user with the given username from the database.
+// If no user is found, an empty user will be returned.
+func UserByUsername(username string) (user model.User, err error) {
+	err = db.First(&user, "username = ?", username).Error
+
+	return
+}
+
 //***********************************UPDATE***********************************//
 
 //***********************************DELETE***********************************//
