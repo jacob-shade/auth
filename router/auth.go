@@ -32,7 +32,7 @@ func AuthMiddleware() fiber.Handler {
 	}
 }
 
-// Login attempts to login the user with the email and password given.
+// Login attempts to login the user with the username and password given.
 //
 // Updates the session storage and client cookie.
 func Login(c *fiber.Ctx) error {
@@ -43,7 +43,7 @@ func Login(c *fiber.Ctx) error {
 		return status
 	}
 
-	user, err := database.UserByEmail(data["email"]) //make sure email in db
+	user, err := database.UserByUsername(data["username"]) //username in db
 	if user.Id == 0 {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
