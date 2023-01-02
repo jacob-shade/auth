@@ -92,6 +92,7 @@ func Logout(c *fiber.Ctx) error {
 
 // checkAuthenticated verifies that the user is authorized.
 func checkAuthenticated(c *fiber.Ctx) error {
+	fmt.Printf("checking if authorized")
 	sess, err := store.Get(c)
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
