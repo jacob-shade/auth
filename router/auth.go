@@ -3,8 +3,8 @@ package router
 import (
 	"fmt"
 	"go-sessions-authentication/config"
+	"go-sessions-authentication/controller"
 	"go-sessions-authentication/database"
-	"go-sessions-authentication/handler"
 	"go-sessions-authentication/model"
 	"go-sessions-authentication/util"
 	"strings"
@@ -123,7 +123,7 @@ func GetUser(c *fiber.Ctx) error {
 	fmt.Println("got userid")
 
 	var user model.User
-	user, err = handler.GetUser(fmt.Sprint(userId))
+	user, err = controller.GetUser(fmt.Sprint(userId))
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
 	}

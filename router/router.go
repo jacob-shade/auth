@@ -4,7 +4,7 @@
 package router
 
 import (
-	"go-sessions-authentication/handler"
+	controller "go-sessions-authentication/controller"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,7 +34,7 @@ func Setup() {
 		AllowHeaders:     "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
 	}))
 
-	router.Post("/auth/register", handler.Register)
+	router.Post("/auth/register", controller.Register)
 	router.Post("/auth/login", Login)
 	router.Post("/auth/logout", Logout)
 	router.Get("/auth/healthcheck", HealthCheck)

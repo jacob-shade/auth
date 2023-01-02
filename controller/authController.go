@@ -3,7 +3,7 @@
 // This package is implemented by manipulating the recieved "[Fiber]" Contexts.
 //
 // [Fiber]: https://pkg.go.dev/github.com/gofiber/fiber/v2@v2.40.1
-package handler
+package controller
 
 import (
 	"go-sessions-authentication/database"
