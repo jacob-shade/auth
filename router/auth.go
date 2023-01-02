@@ -58,7 +58,7 @@ func Login(c *fiber.Ctx) error {
 		return util.NotAuthorized(c)
 	}
 
-	// creating a session
+	// retrieves the session from the store
 	sess, err := store.Get(c)
 	if status := util.ErrorCheck(c, err); status != nil { // error occurred
 		return status
@@ -90,8 +90,8 @@ func Logout(c *fiber.Ctx) error {
 	return util.StatusOK(c, "logged out")
 }
 
-// HealthCheck verifies that the user is authorized.
-func HealthCheck(c *fiber.Ctx) error {
+// checkAuthenticated verifies that the user is authorized.
+func checkAuthenticated(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil { // not authorized
 		return util.NotAuthorized(c)
