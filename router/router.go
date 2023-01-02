@@ -37,7 +37,7 @@ func Setup() {
 	router.Post("/auth/register", controller.Register)
 	router.Post("/auth/login", Login)
 	router.Post("/auth/logout", Logout)
-	router.Get("/auth/healthcheck", HealthCheck)
+	router.Get("/auth/checkAuthenticated", checkAuthenticated)
 
 	router.Get("/user", GetUser)
 
