@@ -42,12 +42,19 @@ func Connect() {
 	address := config.Config("ADDRESS")
 	port := config.Config("PORT")
 	dbName := config.Config("DB_NAME")
-	dsn := fmt.Sprintf("%v:%v@%v(%v:%v)/%v", username, password, protocol,
-		address, port, dbName)
+	dsn := fmt.Sprintf("%v:%v@%v(%v:%v)/%v?charset=utf8&parseTime=True&loc=Local",
+		username, password, protocol, address, port, dbName)
 
 	// Connecting to database.
 	var err error
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.New(mysql.Config{
+		DSN:                       dsn,   // data source name
+		DefaultStringSize:         256,   // default size for string fields
+		DisableDatetimePrecision:  true,  // disable datetime precision, which not supported before MySQL 5.6
+		DontSupportRenameIndex:    true,  // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
+		DontSupportRenameColumn:   true,  // `change` when rename column, rename column not supported before MySQL 8, MariaDB
+		SkipInitializeWithVersion: false, // auto configure based on currently MySQL version
+	}), &gorm.Config{})
 	util.PanicCheck(err, "failed to connect to database")
 	fmt.Printf("Connected to %v database\n", dbName)
 
