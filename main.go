@@ -2,15 +2,20 @@ package main
 
 import (
 	"go-sessions-authentication/database"
+	"go-sessions-authentication/middleware"
 	"go-sessions-authentication/router"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
+	app := fiber.New()
+
 	database.Connect()
 
-	//app.Use(middleware.Logger())
+	middleware.Setup(app)
 
-	router.Setup()
+	router.Setup(app)
 
-	//listen
+	app.Listen(":5000")
 }
