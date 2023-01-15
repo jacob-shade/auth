@@ -4,6 +4,7 @@ import (
 	"go-sessions-authentication/database"
 	"go-sessions-authentication/middleware"
 	"go-sessions-authentication/router"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,5 +18,5 @@ func main() {
 
 	router.Setup(app)
 
-	app.Listen(":5000")
+	log.Fatal(app.Listen(":5000"))
 }
